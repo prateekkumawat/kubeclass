@@ -1,0 +1,51 @@
+# replica sets used to manage and ensure no of pod is running and availabel. 
+# Deployment using replicasets feature to maintain no of pods requireds
+# replicasets used for maintain stabel pods which not required to update and maintain release.
+# A ReplicaSet's purpose is to maintain a "stable set of replica Pods" running at any given time. 
+# As such, it is often used to "guarantee the availability of a specified number" of identical Pods
+
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: rsapp
+  labels:
+    app: rsapp
+spec:
+  # modify replicas according to your case
+  replicas: 2
+  selector:
+    matchLabels:
+      app: rsapp
+  template:
+    metadata:
+      labels:
+        app: rsapp
+    spec:
+      containers:
+      - name: rsapp
+        image: prateekkumawat/web_cust:1.0
+        imagePullPolicy: Always
+        command:
+          - sleep
+          - "3600"
+        ports:
+        - name: web
+          containerPort:  80
+          protocol: TCP
+      imagePullSecrets:
+        - name: myhub
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: rsapp
+spec:
+  selector:
+    app: rsapp
+  type: NodePort
+  ports:
+  - name: rsapp-port
+    port:  80
+    targetPort: 80
+    nodePort: 31735

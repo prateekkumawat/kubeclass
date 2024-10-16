@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nvmestore
+  labels:
+    app: localapp
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Recycle
+  storageClassName: local
+  hostPath:
+    path: /datakube/pod-data
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nvmestore-pvc
+  labels:
+    app: localapp
+spec:
+  storageClassName: local
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "lcoalapp"
+  namespace: default
+  labels:
+    app: "localapp"
+spec:
+  containers:
+  - name: web
+    image: "nginx:latest"
+    resources:
+      limits:
+        cpu: 200m
+        memory: 500Mi
+      requests:
+        cpu: 100m
+        memory: 200Mi
+    ports:
+    - containerPort:  80
+      name:  http
+    volumeMounts:
+    - name: datavol
+      mountPath: /opt
+  volumes:
+    - name: datavol
+      persistentVolumeClaim:
+        claimName: local-vol-pvc
+      
