@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oxerapp
+  namespace: oxer
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: oxerapp
+  template:
+    metadata:
+      labels:
+        app: oxerapp
+    spec:
+      containers:
+      - name: oxerapp
+        image: prateekkumawat/oxer:latest
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        imagePullPolicy: Always
+      imagePullSecrets:
+        - name: oxer-secret
+        

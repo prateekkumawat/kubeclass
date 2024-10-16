@@ -1,0 +1,21 @@
+# https://kubernetes.io/docs/concepts/services-networking/ingress/#the-ingress-resource
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: oxerapp
+  namespace: oxer
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  ingressClassName: nginx
+  rules:
+  - http:
+      paths:
+      - path: /oxerapp
+        pathType: Prefix
+        backend:
+          service:
+            name: oxerapp
+            port:
+              number: 80

@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: webnginx
+spec:
+  selector:
+    app: web
+  type: NodePort
+  ports:
+  - name: web
+    port:  80
+    targetPort: 31337

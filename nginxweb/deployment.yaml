@@ -1,0 +1,30 @@
+# use for deploy applications 
+# Deployment helps to manage app and pod with replica scales
+# pod will be schdule bu kube-schduler 
+# its auto manage and ensure require no of pods always runnig
+# if you remove or down pods deployment schdule these pods on another availabel nodes. 
+# #  deployment provide your pod cab be update, revise , version control, scales and help to manage your application pods. 
+
+#https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  namespace: learnweb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web 
+    spec:
+      containers:
+      - name: web
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+          protocol: TCP

@@ -1,0 +1,17 @@
+# namespace in kubernetes utlized for manage isolated projects. 
+# namespace is check and create by using below command 
+# kubectl get ns or kubectl create ns name-space-name
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: learnweb
+
+
+--- 
+# create a namespace using yaml files 
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dsproject

@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: oxerapp
+  namespace: oxer
+spec:
+  selector:
+    app: oxerapp
+  type: ClusterIP
+  ports:
+  - name: oxerapp
+    port: 80
+    targetPort: 80
