@@ -6,4 +6,5 @@ provisioner: ebs.csi.aws.com
 parameters:
   type: gp3
 reclaimPolicy: Delete
-volumeBindingMode: WaitForFirstConsumer
+volumeBindingMode: WaitForFirstConsumer 
+allowVolumeExpansion: true
