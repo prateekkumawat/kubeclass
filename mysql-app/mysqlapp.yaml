@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql-db
+  namespace: datastore
+spec:
+  selector:
+    matchLabels:
+      app: datastore     # has to match .spec.template.metadata.labels
+      type: database
+      project: learning-db-examples
+  serviceName: "nginx"
+  replicas: 1           # replication count of pods 
+  template:
+    metadata:
+      labels:
+        app: datastore       # has to match .spec.selector.matchLabels
+        type: database
+        project: learning-db-examples
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: mysql-db
+        image: mysql:latest
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - name: datastore
+          mountPath: /var/lib/mysql/
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "1000Mi"
+          limits: 
+            cpu: "1000m" 
+            memory: "1500Mi"
+        env:
+          - name: MYSQL_USER
+            valueFrom:
+              secretKeyRef:
+                name: mysql-db-secret
+                key: mysqluser
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysql-db-secret
+                key: mysqlpass
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysql-db-secret
+                key: mysqlpass
+      volumes:
+      - name: datavol
+      persistentVolumeClaim:
+        claimName: mysql-db-pv      
+               
+              
