@@ -25,7 +25,7 @@ spec:
         ports:
         - containerPort: 3306
         volumeMounts:
-        - name: datastore
+        - name: datavol
           mountPath: /var/lib/mysql/
         resources:
           requests:
@@ -52,7 +52,7 @@ spec:
                 key: mysqlpass
       volumes:
       - name: datavol
-      persistentVolumeClaim:
-        claimName: mysql-db-pv      
+        persistentVolumeClaim:
+          claimName: mysql-db-pv      
                
               
