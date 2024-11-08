@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordpressapp
+  namespace: wpproject
+  labels:
+    app: wpweb     # has to match .spec.template.metadata.labels
+    type: webapp
+    project: wpproject-examples
+spec:
+  selector:
+    matchLabels:
+      app: wpweb     # has to match .spec.template.metadata.labels
+      type: webapp
+      project: wpproject-examples
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: wpweb     # has to match .spec.template.metadata.labels
+        type: webapp
+        project: wpproject-examples
+    spec:
+      containers:
+      - image: wordpress:latest
+        name: wordpress
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "1000Mi"
+          limits:
+            cpu: "1000M"
+            memory: "1000Mi"
+        env:
+        - name: WORDPRESS_DB_HOST
+          value: wp-db-app-0.wpproject.svc.cluster.local
+        - name: WORDPRESS_DB_NAME
+          value: local
+        - name: WORDPRESS_DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: secret-db-auth
+              key: username
+        - name: WORDPRESS_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: secret-db-auth
+              key: password   
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - mountPath: /var/www/html/
+          name: datapath
+      volumes:
+      - name: datapath
+        persistentVolumeClaim:
+          claimName: wpapp-pvc
+        

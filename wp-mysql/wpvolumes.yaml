@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: wpappvol
+  namespace: wpproject
+  labels:
+    app: wpweb     # has to match .spec.template.metadata.labels
+    type: webapp
+    project: wpproject-examples
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/wpappvol"
+---
+# Allow pvc for mysql storages mount
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: wpapp-pvc
+  namespace: wpproject
+  labels:
+    app: wpweb     # has to match .spec.template.metadata.labels
+    type: webapp
+    project: wpproject-examples
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi

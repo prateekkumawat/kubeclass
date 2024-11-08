@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Service
+metadata:
+   namespace: wpproject
+   name: wp-db-app-0
+   labels: 
+     app: wpweb
+     type: webapp
+     project: wpproject-examples 
+     statefulset.kubernetes.io/pod-name: wp-db-app-0
+spec:
+  type: ClusterIP
+  ports:
+  - port: 3306
+    protocol: TCP
+    targetPort: 3306
+  selector:  
+    app: wpweb
+    apps.kubernetes.io/pod-index: "0"
+    #controller-revision-hash: wp-db-app-6bc9fc6fbd
+    project: wpproject-examples
+    statefulset.kubernetes.io/pod-name: wp-db-app-0
+    type: webapp
+
+
+# your db expose link wp-db-app-0.wpproject.svc.cluster.local 
+# pattern service_name.namespace.svc.cluster.local:portno
+   

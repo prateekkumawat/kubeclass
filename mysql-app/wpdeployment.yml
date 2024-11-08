@@ -42,7 +42,7 @@ spec:
             memory: 1000Mi
         env:
           - name: WORDPRESS_DB_HOST
-            valueFrom: mysql-db-0.datastore.svc.cluster.local
+            value: mysql-db-0.datastore.svc.cluster.local
           - name: WORDPRESS_DB_PASSWORD
             valueFrom:
               secretKeyRef:
@@ -54,15 +54,14 @@ spec:
                 name: wp-secret
                 key: wpuser   
           - name: WORDPRESS_DB_NAME
-            valueFrom: wordpress   
+            value: wordpress   
         ports:
         - containerPort:  80
-          name:  MYAPP
+          name: wp
         volumeMounts:
-        - name: localtime
-          mountPath: /etc/localtime
+        - name: webmount
+          mountPath: /var/www/html/
       volumes:
-        - name: localtime
-          hostPath:
-            path: /usr/share/zoneinfo/Asia/Shanghai
-      restartPolicy: Always
+      - name: webmount
+        persistentVolumeClaim:
+          claimName: wp-pvc
