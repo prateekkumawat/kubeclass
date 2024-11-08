@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: wp-db-app
+  namespace: wpproject
+  labels:
+    app: wpweb
+    type: webapp
+    project: wpproject-examples
+spec:
+  selector:
+    matchLabels:
+      app: wpweb
+      type: webapp
+      project: wpproject-examples # has to match .spec.template.metadata.labels
+  #serviceName: "nginx"
+  replicas: 1  # by default is 1
+  template:
+    metadata:
+      labels:
+        app: wpweb
+        type: webapp
+        project: wpproject-examples
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: mysql-db-app
+        image: mysql:latest
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - name: wpdbvol
+          mountPath: /var/log/mysql/
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "1000Mi"
+          limits: 
+            cpu: "1000m" 
+            memory: "1500Mi"
+        env:
+          - name: MYSQL_USER
+            valueFrom:
+              secretKeyRef:
+                name: secret-db-auth
+                key: username
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: secret-db-auth
+                key: password
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: secret-db-auth
+                key: password
+      volumes:
+      - name: wpdbvol
+        persistentVolumeClaim:
+          claimName: mysql-db-pvc  

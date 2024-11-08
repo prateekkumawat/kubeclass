@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: wp-pv
+  namespace: datastore
+  labels:
+    app: datastore     # has to match .spec.template.metadata.labels
+    type: database
+    project: learning-db-examples
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/wpvol"
+
+---
+# Allow pvc for mysql storages mount
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: wp-pvc
+  namespace: datastore
+  labels:
+    app: datastore     # has to match .spec.template.metadata.labels
+    type: database
+    project: learning-db-examples
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi

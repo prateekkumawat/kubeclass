@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: wpproject
+  labels: 
+     app: wpweb
+     type: webapp
+     project: wpproject-examples
