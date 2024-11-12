@@ -1,0 +1,24 @@
+# https://kubernetes.io/docs/concepts/services-networking/ingress/#the-ingress-resource
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: wprule
+  namespace: wpproject
+  labels:
+     app: wpweb
+     type: webapp
+     project: wpproject-examples
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /   
+spec:
+  ingressClassName: nginxexample
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: wordpressapp
+            port:
+              number: 80

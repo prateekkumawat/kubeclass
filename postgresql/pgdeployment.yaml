@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: pg-db-app
+  namespace: wpproject
+  labels:
+    app: wpweb
+    type: webapp
+    project: wpproject-examples
+spec:
+  selector:
+    matchLabels:
+      app: wpweb
+      type: webapp
+      project: wpproject-examples # has to match .spec.template.metadata.labels
+  #serviceName: "nginx"
+  replicas: 1  # by default is 1
+  template:
+    metadata:
+      labels:
+        app: wpweb
+        type: webapp
+        project: wpproject-examples
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: pg-db-app
+        image: postgres:latest
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - name: postgredata
+          mountPath: /var/lib/postgresql/data/
+        env:
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: secret-db-auth
+                key: username
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: secret-db-auth
+                key: password
+      volumes:
+      - name: postgredata
+        persistentVolumeClaim:
+          claimName: pg-db-pvc
